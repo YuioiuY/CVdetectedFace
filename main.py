@@ -39,7 +39,7 @@ for figure in figures:
         x1, y1, w1, h1 = eyes[0]
         x2, y2, w2, h2 = eyes[1]
 
-        glasses_width =  int((x2 + w2 - x1))
+        glasses_width =  int((x2 + w2 - x1)*1.15)
         glasses_height = int(0.6 * glasses_width)  
 
         glasses_resized = cv2.resize(glasses, (glasses_width, glasses_height))
