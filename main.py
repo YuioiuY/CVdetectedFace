@@ -1,4 +1,4 @@
-import cv2
+import cv2, math
 from matplotlib import pyplot
 import numpy as np
 
@@ -39,10 +39,16 @@ for figure in figures:
         x1, y1, w1, h1 = eyes[0]
         x2, y2, w2, h2 = eyes[1]
 
-        glasses_width = x2 + w2 - x1  
+        glasses_width =  int((x2 + w2 - x1))
         glasses_height = int(0.6 * glasses_width)  
 
         glasses_resized = cv2.resize(glasses, (glasses_width, glasses_height))
+
+        alpha = math.degrees(math.atan2(y2 - y1, x2 - x1))  
+        center = (glasses_width // 2, glasses_height // 2)
+        rotation_matrix = cv2.getRotationMatrix2D((center), -alpha, 1.0)
+        glasses_resized = cv2.warpAffine(glasses_resized, rotation_matrix, (glasses_width, glasses_height), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT, borderValue=(0, 0, 0, 0))
+
 
         glasses_x = x + x1  
         glasses_y = y + y1 - int(0.1 * glasses_height)  
@@ -81,7 +87,7 @@ for figure in figures:
     
 
 
-fig, (ax1, ax2, ax3, ax4) = pyplot.subplots(1, 4, figsize=(15, 8))
+fig, (ax1, ax2, ax3, ax4, ax5) = pyplot.subplots(1, 5, figsize=(15, 8))
 ax1.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
 ax1.xaxis.set_ticks([])
 ax1.yaxis.set_ticks([])
@@ -101,5 +107,10 @@ ax4.imshow(cv2.cvtColor(img4, cv2.COLOR_BGR2RGB))
 ax4.xaxis.set_ticks([])
 ax4.yaxis.set_ticks([])
 ax4.set_title('Очки')
+
+ax5.imshow(cv2.cvtColor(glasses, cv2.COLOR_BGR2RGB))
+ax5.xaxis.set_ticks([])
+ax5.yaxis.set_ticks([])
+ax5.set_title('Очки в натуральную велечину')
 
 pyplot.show()
